@@ -80,7 +80,7 @@ export async function applyMigrations(): Promise<void> {
         await fs.rename(legacyName, correctName);
       }
     } else {
-      throw new Error(error.message);
+      throw error;
     }
   } finally {
     await client.end();

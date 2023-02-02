@@ -9,7 +9,7 @@
         }
     ],
     "env": {
-        "AUTH_JWT_CUSTOM_CLAIMS": "{\"projectsLeaded\":\"projectsLeaded[].projectId\",\"githubUserId\":\"githubUser.githubUserId\"}",
+        "AUTH_JWT_CUSTOM_CLAIMS": "{\"shopifyCustomerId\":\"customer.shopifyId\"}",
         "AUTH_LOG_LEVEL": "info"
     },
     "environments": {
