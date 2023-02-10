@@ -245,18 +245,13 @@ export const oauthProviders = Router()
         userId = user.id;
 
         // * add this provider to existing user with the same email
-        const result = await pgClient.insertUserProviderToUser({
+        await pgClient.insertUserProviderToUser({
           userId: user.id,
           providerId: provider,
           providerUserId,
           refreshToken,
           accessToken,
         });
-
-        if (!result) {
-          logger.warn('Could not add a provider to user');
-          return sendError(res, 'internal-error', { redirectTo }, true);
-        }
       } else {
         // * No user found with this email. Create a new user
         // TODO feature: check if registration is enabled
