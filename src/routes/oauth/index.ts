@@ -271,7 +271,9 @@ export const oauthProviders = Router()
     if (userId) {
       const refreshToken = await pgClient.insertRefreshToken(userId);
       // * redirect back user to app url
-      return res.redirect(`${redirectTo}?refreshToken=${refreshToken}`);
+      const redirectUrl = new URL(redirectTo);
+      redirectUrl.searchParams.append('refreshToken', refreshToken)
+      return res.redirect(redirectUrl.href);
     }
 
     logger.error('Could not retrieve user ID');
