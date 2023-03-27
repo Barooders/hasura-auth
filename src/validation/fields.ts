@@ -114,7 +114,8 @@ export const redirectTo = Joi.string()
       const url = new URL(value);
 			let urlWithoutParams: string;
 			if (url.origin === 'null') {
-				urlWithoutParams = `${url.protocol}${url.pathname}`.replace(/[.]/g, '/');
+				urlWithoutParams = `${url.protocol}${url.hostname ? `//${url.hostname}` : url.pathname}`
+					.replace(/[.]/g, '/');
 			} else {
         // * Remove the query parameters and the hash
         urlWithoutParams = `${url.origin}${url.pathname}`
