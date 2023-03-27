@@ -112,11 +112,15 @@ export const redirectTo = Joi.string()
     try {
       // * Don't take the query parameters into account
       const url = new URL(value);
-      const urlWithoutParams =
+			let urlWithoutParams: string;
+			if (url.origin === 'null') {
+				urlWithoutParams = `${url.protocol}${url.pathname}`.replace(/[.]/g, '/');
+			} else {
         // * Remove the query parameters and the hash
-        `${url.origin}${url.pathname}`
+        urlWithoutParams = `${url.origin}${url.pathname}`
           // * Replace all the `.` by `/` so micromatch will understand `.` as a path separator
           .replace(/[.]/g, '/');
+			}
       const match = micromatch.isMatch(urlWithoutParams, expressions, {
         nocase: true,
       });
