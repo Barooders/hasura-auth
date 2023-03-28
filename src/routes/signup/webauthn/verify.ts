@@ -139,6 +139,10 @@ export const signInVerifyWebauthnHandler: RequestHandler<
               prepared: true,
               value: link,
             },
+            'x-app-link': {
+              prepared: true,
+              value: appLink,
+            },
           },
         },
         locals: {

@@ -96,6 +96,10 @@ export const userPasswordResetHandler: RequestHandler<
           prepared: true,
           value: link,
         },
+        'x-app-link': {
+          prepared: true,
+          value: appLink,
+        },
       },
     },
   });
