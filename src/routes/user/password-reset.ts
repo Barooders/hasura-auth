@@ -63,6 +63,8 @@ export const userPasswordResetHandler: RequestHandler<
     'barooders://auth-callback'
   );
 
+  console.error({ link, appLink });
+
   await sendEmail({
     template,
     locals: {
