@@ -118,6 +118,8 @@ export const signInVerifyWebauthnHandler: RequestHandler<
         'barooders://auth-callback'
       );
 
+      console.log({ link, appLink });
+
       await sendEmail({
         template,
         message: {
