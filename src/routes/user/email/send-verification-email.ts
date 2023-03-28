@@ -13,6 +13,7 @@ import { sendEmail } from '@/email';
 import { sendError } from '@/errors';
 import { Joi, email, redirectTo } from '@/validation';
 import { EMAIL_TYPES } from '@/types';
+import { logger } from '@/logger';
 
 export const userEmailSendVerificationEmailSchema = Joi.object({
   email: email.required(),
@@ -66,6 +67,15 @@ export const userEmailSendVerificationEmailHandler: RequestHandler<
     ticket,
     redirectTo
   );
+
+  const appLink = createEmailRedirectionLink(
+    EMAIL_TYPES.VERIFY,
+    ticket,
+    'barooders://auth-callback'
+  );
+
+  logger.error({ link, appLink, title: 'send-verification-email' });
+
   await sendEmail({
     template,
     message: {
@@ -91,6 +101,7 @@ export const userEmailSendVerificationEmailHandler: RequestHandler<
     },
     locals: {
       link,
+      appLink,
       displayName: user.displayName,
       email: user.email,
       newEmail: user.newEmail,

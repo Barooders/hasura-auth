@@ -1,5 +1,4 @@
 import { sendError, sendUnspecifiedError } from '@/errors';
-import { logger } from '@/logger';
 import {
   createEmailRedirectionLink, createVerifyEmailTicket, ENV,
   getSignInResponse, getUserByEmail,
@@ -113,13 +112,6 @@ export const signInVerifyWebauthnHandler: RequestHandler<
         ticket,
         redirectTo
       );
-      const appLink = createEmailRedirectionLink(
-        EMAIL_TYPES.VERIFY,
-        ticket,
-        'barooders://auth-callback'
-      );
-
-      logger.error({ link, appLink });
 
       await sendEmail({
         template,
@@ -142,15 +134,10 @@ export const signInVerifyWebauthnHandler: RequestHandler<
               prepared: true,
               value: link,
             },
-            'x-app-link': {
-              prepared: true,
-              value: appLink,
-            },
           },
         },
         locals: {
           link,
-          appLink,
           displayName: user.displayName,
           email: newEmail,
           newEmail,

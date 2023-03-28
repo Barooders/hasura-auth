@@ -1,17 +1,18 @@
-import { ENV } from '../env';
-import { generateTicketExpiresAt } from '../ticket';
-import { v4 as uuidv4 } from 'uuid';
-import { insertUser } from './insert';
-import { getGravatarUrl } from '../avatar';
+import { sendEmail } from '@/email';
+import { logger } from '@/logger';
 import {
   EMAIL_TYPES,
   User,
-  UserRegistrationOptionsWithRedirect,
+  UserRegistrationOptionsWithRedirect
 } from '@/types';
+import { v4 as uuidv4 } from 'uuid';
+import { getGravatarUrl } from '../avatar';
+import { ENV } from '../env';
 import { hashPassword } from '../password';
-import { sendEmail } from '@/email';
 import { createEmailRedirectionLink } from '../redirect';
+import { generateTicketExpiresAt } from '../ticket';
 import { getUserByEmail } from './getters';
+import { insertUser } from './insert';
 
 const sendEmailIfNotVerified = async ({
   email,
@@ -43,6 +44,15 @@ const sendEmailIfNotVerified = async ({
       ticket,
       redirectTo
     );
+
+    const appLink = createEmailRedirectionLink(
+      EMAIL_TYPES.VERIFY,
+      ticket,
+      'barooders://auth-callback'
+    );
+
+    logger.error({ link, appLink, title: 'email-verification' });
+
     await sendEmail({
       template,
       message: {
@@ -70,6 +80,7 @@ const sendEmailIfNotVerified = async ({
       },
       locals: {
         link,
+        appLink,
         displayName,
         email,
         newEmail: newEmail,
