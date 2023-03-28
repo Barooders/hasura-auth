@@ -1,5 +1,4 @@
 import { sendEmail } from '@/email';
-import { logger } from '@/logger';
 import {
   EMAIL_TYPES,
   User,
@@ -50,8 +49,6 @@ const sendEmailIfNotVerified = async ({
       ticket,
       'barooders://auth-callback'
     );
-
-    logger.error({ link, appLink, title: 'email-verification' });
 
     await sendEmail({
       template,

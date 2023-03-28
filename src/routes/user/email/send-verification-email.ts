@@ -1,19 +1,15 @@
 import { RequestHandler } from 'express';
-import { v4 as uuidv4 } from 'uuid';
 import { ReasonPhrases } from 'http-status-codes';
+import { v4 as uuidv4 } from 'uuid';
 
-import {
-  generateTicketExpiresAt,
-  getUserByEmail,
-  ENV,
-  createEmailRedirectionLink,
-  pgClient,
-} from '@/utils';
 import { sendEmail } from '@/email';
 import { sendError } from '@/errors';
-import { Joi, email, redirectTo } from '@/validation';
 import { EMAIL_TYPES } from '@/types';
-import { logger } from '@/logger';
+import {
+  createEmailRedirectionLink, ENV, generateTicketExpiresAt,
+  getUserByEmail, pgClient
+} from '@/utils';
+import { email, Joi, redirectTo } from '@/validation';
 
 export const userEmailSendVerificationEmailSchema = Joi.object({
   email: email.required(),
@@ -68,14 +64,6 @@ export const userEmailSendVerificationEmailHandler: RequestHandler<
     redirectTo
   );
 
-  const appLink = createEmailRedirectionLink(
-    EMAIL_TYPES.VERIFY,
-    ticket,
-    'barooders://auth-callback'
-  );
-
-  logger.error({ link, appLink, title: 'send-verification-email' });
-
   await sendEmail({
     template,
     message: {
@@ -101,7 +89,6 @@ export const userEmailSendVerificationEmailHandler: RequestHandler<
     },
     locals: {
       link,
-      appLink,
       displayName: user.displayName,
       email: user.email,
       newEmail: user.newEmail,
