@@ -57,19 +57,11 @@ export const userPasswordResetHandler: RequestHandler<
     ticket,
     redirectTo
   );
-  const appLink = createEmailRedirectionLink(
-    EMAIL_TYPES.VERIFY,
-    ticket,
-    'barooders://auth-callback'
-  );
-
-  console.error({ link, appLink });
 
   await sendEmail({
     template,
     locals: {
       link,
-      appLink,
       displayName: user.displayName,
       email,
       newEmail: user.newEmail,
@@ -97,10 +89,6 @@ export const userPasswordResetHandler: RequestHandler<
         'x-link': {
           prepared: true,
           value: link,
-        },
-        'x-app-link': {
-          prepared: true,
-          value: appLink,
         },
       },
     },
