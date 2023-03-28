@@ -1,23 +1,19 @@
 import { sendError, sendUnspecifiedError } from '@/errors';
 import {
-  ENV,
-  getSignInResponse,
-  verifyWebAuthnRegistration,
-  createVerifyEmailTicket,
-  createEmailRedirectionLink,
-  getUserByEmail,
-  pgClient,
+  createEmailRedirectionLink, createVerifyEmailTicket, ENV,
+  getSignInResponse, getUserByEmail,
+  pgClient, verifyWebAuthnRegistration
 } from '@/utils';
 import { RequestHandler } from 'express';
 
-import { RegistrationCredentialJSON } from '@simplewebauthn/typescript-types';
-import { Joi, redirectTo } from '@/validation';
+import { sendEmail } from '@/email';
 import {
   EMAIL_TYPES,
   SignInResponse,
-  UserRegistrationOptionsWithRedirect,
+  UserRegistrationOptionsWithRedirect
 } from '@/types';
-import { sendEmail } from '@/email';
+import { Joi, redirectTo } from '@/validation';
+import { RegistrationCredentialJSON } from '@simplewebauthn/typescript-types';
 
 export type SignUpVerifyWebAuthnRequestBody = {
   credential: RegistrationCredentialJSON;
@@ -116,6 +112,12 @@ export const signInVerifyWebauthnHandler: RequestHandler<
         ticket,
         redirectTo
       );
+      const appLink = createEmailRedirectionLink(
+        EMAIL_TYPES.VERIFY,
+        ticket,
+        'barooders://auth-callback'
+      );
+
       await sendEmail({
         template,
         message: {
@@ -141,6 +143,7 @@ export const signInVerifyWebauthnHandler: RequestHandler<
         },
         locals: {
           link,
+          appLink,
           displayName: user.displayName,
           email: newEmail,
           newEmail,
