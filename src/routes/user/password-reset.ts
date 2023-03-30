@@ -58,10 +58,17 @@ export const userPasswordResetHandler: RequestHandler<
     redirectTo
   );
 
+  const appLink = createEmailRedirectionLink(
+    EMAIL_TYPES.PASSWORD_RESET,
+    ticket,
+    'barooders://auth-callback'
+  );
+
   await sendEmail({
     template,
     locals: {
       link,
+      appLink,
       displayName: user.displayName,
       email,
       newEmail: user.newEmail,
