@@ -112,6 +112,7 @@ export type SmsLocals = CommonLocals & {
 
 export type EmailLocals = CommonLocals & {
   link: string;
+  appLink?: string;
   email: string;
   newEmail: string | null;
   ticket: string;
