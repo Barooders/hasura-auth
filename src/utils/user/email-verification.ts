@@ -44,12 +44,6 @@ const sendEmailIfNotVerified = async ({
       redirectTo
     );
 
-    const appLink = createEmailRedirectionLink(
-      EMAIL_TYPES.VERIFY,
-      ticket,
-      'barooders://auth-callback'
-    );
-
     await sendEmail({
       template,
       message: {
@@ -77,7 +71,6 @@ const sendEmailIfNotVerified = async ({
       },
       locals: {
         link,
-        appLink,
         displayName,
         email,
         newEmail: newEmail,
