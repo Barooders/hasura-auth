@@ -40,7 +40,7 @@ export const verifyHandler: RequestHandler<
   });
 
   // different types
-  if (type === EMAIL_TYPES.VERIFY) {
+  if (type === EMAIL_TYPES.VERIFY || type === EMAIL_TYPES.PASSWORD_RESET) {
     await pgClient.updateUser({
       id: user.id,
       user: {
@@ -73,9 +73,6 @@ export const verifyHandler: RequestHandler<
         emailVerified: true,
       },
     });
-  } else if (type === EMAIL_TYPES.PASSWORD_RESET) {
-    // noop
-    // just redirecting the user to the client (as signed-in).
   }
 
   const refreshToken = await pgClient.insertRefreshToken(user.id);
