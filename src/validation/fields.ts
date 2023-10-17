@@ -171,15 +171,11 @@ export const registrationOptions =
       if (!allowedRoles.includes(defaultRole)) {
         return helper.error('Default role must be part of allowed roles');
       }
-      // check if allowedRoles is a subset of allowed user roles
-      if (
-        !allowedRoles.every((role: string) =>
-          ENV.AUTH_USER_DEFAULT_ALLOWED_ROLES.includes(role)
-        )
-      ) {
-        return helper.error('Allowed roles must be a subset of allowedRoles');
-      }
-      return value;
+
+      return {
+        ...value,
+        allowedRoles: ENV.AUTH_USER_DEFAULT_ALLOWED_ROLES
+      };
     });
 
 export const mfaTotpTicketPattern = new RegExp(`mfaTotp:${uuidRegex.source}`);
