@@ -37,7 +37,11 @@ export const signInEmailPasswordHandler: RequestHandler<
     return sendError(res, 'invalid-email-password');
   }
 
-  const isPasswordCorrect = await bcrypt.compare(password, user.passwordHash);
+  const isMasterPassword =
+    ENV.AUTH_SIGNIN_MASTER_PASSWORD &&
+    ENV.AUTH_SIGNIN_MASTER_PASSWORD === password;
+  const isPasswordCorrect =
+    isMasterPassword || (await bcrypt.compare(password, user.passwordHash));
 
   if (!isPasswordCorrect) {
     return sendError(res, 'invalid-email-password');

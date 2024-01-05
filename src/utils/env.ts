@@ -189,6 +189,9 @@ export const ENV = {
   get AUTH_SIGNIN_RECAPTCHA_CHALLENGE() {
     return castBooleanEnv('AUTH_SIGNIN_RECAPTCHA_CHALLENGE', false);
   },
+  get AUTH_SIGNIN_MASTER_PASSWORD() {
+    return castStringEnv('AUTH_SIGNIN_MASTER_PASSWORD');
+  },
 
   // get AUTH_SIGNIN_PHONE_NUMBER_VERIFIED_REQUIRED() {
   //   return castBooleanEnv('AUTH_SIGNIN_PHONE_NUMBER_VERIFIED_REQUIRED', true);
