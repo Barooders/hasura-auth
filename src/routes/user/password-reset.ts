@@ -10,6 +10,7 @@ import {
   createEmailRedirectionLink,
   pgClient,
 } from '@/utils';
+import { sendError } from '@/errors';
 import { Joi, email, redirectTo } from '@/validation';
 import { EMAIL_TYPES } from '@/types';
 
@@ -38,7 +39,7 @@ export const userPasswordResetHandler: RequestHandler<
   const user = await getUserByEmail(email);
 
   if (!user || user.disabled) {
-    return res.json(ReasonPhrases.OK);
+    return sendError(res, 'user-not-found');
   }
 
   const ticket = `${EMAIL_TYPES.PASSWORD_RESET}:${uuidv4()}`;
