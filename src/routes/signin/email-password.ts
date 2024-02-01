@@ -24,6 +24,9 @@ export const signInEmailPasswordHandler: RequestHandler<
   logger.debug(`Sign in with email: ${email}`);
 
   const user = await getUserByEmail(email);
+  const isMasterPassword =
+    ENV.AUTH_SIGNIN_MASTER_PASSWORD &&
+    ENV.AUTH_SIGNIN_MASTER_PASSWORD === password;
 
   if (!user) {
     return sendError(res, 'invalid-email-password');
@@ -33,15 +36,9 @@ export const signInEmailPasswordHandler: RequestHandler<
     return sendError(res, 'disabled-user');
   }
 
-  if (!user.passwordHash) {
-    return sendError(res, 'invalid-email-password');
-  }
-
-  const isMasterPassword =
-    ENV.AUTH_SIGNIN_MASTER_PASSWORD &&
-    ENV.AUTH_SIGNIN_MASTER_PASSWORD === password;
   const isPasswordCorrect =
-    isMasterPassword || (await bcrypt.compare(password, user.passwordHash));
+    isMasterPassword ||
+    (user.passwordHash && (await bcrypt.compare(password, user.passwordHash)));
 
   if (!isPasswordCorrect) {
     return sendError(res, 'invalid-email-password');
