@@ -51,6 +51,7 @@ export type UserRegistrationOptions = {
   allowedRoles: string[];
   defaultRole: string;
   displayName?: string;
+  phoneNumber?: string;
   metadata: Metadata;
 };
 

@@ -2,7 +2,7 @@ import { sendEmail } from '@/email';
 import {
   EMAIL_TYPES,
   User,
-  UserRegistrationOptionsWithRedirect
+  UserRegistrationOptionsWithRedirect,
 } from '@/types';
 import { v4 as uuidv4 } from 'uuid';
 import { getGravatarUrl } from '../avatar';
@@ -103,6 +103,7 @@ export const createUserAndSendVerificationEmail = async (
     allowedRoles,
     metadata,
     displayName = email,
+    phoneNumber,
   } = options;
 
   const existingUser = await getUserByEmail(email);
@@ -141,6 +142,7 @@ export const createUserAndSendVerificationEmail = async (
     locale,
     defaultRole,
     roles: allowedRoles,
+    phoneNumber,
     metadata,
   });
 
