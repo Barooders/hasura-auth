@@ -112,16 +112,17 @@ export const redirectTo = Joi.string()
     try {
       // * Don't take the query parameters into account
       const url = new URL(value);
-			let urlWithoutParams: string;
-			if (url.origin === 'null') {
-				urlWithoutParams = `${url.protocol}${url.hostname ? `//${url.hostname}` : url.pathname}`
-					.replace(/[.]/g, '/');
-			} else {
+      let urlWithoutParams: string;
+      if (url.origin === 'null') {
+        urlWithoutParams = `${url.protocol}${
+          url.hostname ? `//${url.hostname}` : url.pathname
+        }`.replace(/[.]/g, '/');
+      } else {
         // * Remove the query parameters and the hash
         urlWithoutParams = `${url.origin}${url.pathname}`
           // * Replace all the `.` by `/` so micromatch will understand `.` as a path separator
           .replace(/[.]/g, '/');
-			}
+      }
       const match = micromatch.isMatch(urlWithoutParams, expressions, {
         nocase: true,
       });
@@ -156,6 +157,20 @@ export const refreshToken = uuid
 
 export const token = jwt.optional().description('Access token');
 
+export const phoneNumber = Joi.string()
+  .required()
+  .custom((value: string) => {
+    // * Replace '00' prefix by '+'
+    if (value.startsWith('00')) {
+      value = value.replace('00', '+');
+    }
+    if (isValidPhoneNumber(value)) {
+      return parsePhoneNumber(value).format('E.164');
+    } else {
+      throw new Error('invalid phone number');
+    }
+  }, 'valid phone number');
+
 export const registrationOptions =
   Joi.object<UserRegistrationOptionsWithRedirect>({
     locale,
@@ -164,6 +179,7 @@ export const registrationOptions =
     displayName,
     metadata,
     redirectTo,
+    phoneNumber,
   })
     .default()
     .custom((value, helper) => {
@@ -174,7 +190,7 @@ export const registrationOptions =
 
       return {
         ...value,
-        allowedRoles: ENV.AUTH_USER_DEFAULT_ALLOWED_ROLES
+        allowedRoles: ENV.AUTH_USER_DEFAULT_ALLOWED_ROLES,
       };
     });
 
@@ -189,17 +205,3 @@ export const activeMfaType = Joi.alternatives()
   .description(
     'Multi-factor authentication type. A null value deactivates MFA'
   );
-
-export const phoneNumber = Joi.string()
-  .required()
-  .custom((value: string) => {
-    // * Replace '00' prefix by '+'
-    if (value.startsWith('00')) {
-      value = value.replace('00', '+');
-    }
-    if (isValidPhoneNumber(value)) {
-      return parsePhoneNumber(value).format('E.164');
-    } else {
-      throw new Error('invalid phone number');
-    }
-  }, 'valid phone number');
