@@ -158,7 +158,7 @@ export const refreshToken = uuid
 export const token = jwt.optional().description('Access token');
 
 export const phoneNumber = Joi.string()
-  .required()
+  .optional()
   .custom((value: string) => {
     // * Replace '00' prefix by '+'
     if (value.startsWith('00')) {
